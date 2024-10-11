@@ -9,31 +9,45 @@
 
 @interface ViewController (){
     int i;
+    
+    
 }
 @property (weak, nonatomic) IBOutlet UITextField *texto1;
-@property (weak, nonatomic) IBOutlet UIStepper *stepper1;
-
+@property (weak, nonatomic) IBOutlet UIButton *botonIn;
+@property (weak, nonatomic) IBOutlet UIButton *botonDn;
+@property (strong, nonatomic) NSNumberFormatter *numberFormatter;
 @end
 
 @implementation ViewController
 
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    i = 1;
     
-    [_stepper1 setTransform:CGAffineTransformMakeRotation(-M_PI_2)];
-    
-    [_stepper1 setTransform:CGAffineTransformScale(_stepper1.transform, 0.5, 0.5)];
+    self.texto1.text = @"0";
+    self.numberFormatter = [[NSNumberFormatter alloc]init];
+    self.numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
 }
-- (IBAction)stepper1:(UIStepper *)sender {
-        [_texto1 setText:[NSString stringWithFormat:@"%d",
-                          (int)_stepper1.value]];
-}
+
 - (IBAction)botonDn:(UIButton *)sender {
-    i --;
-    _texto1.text = [NSString stringWithFormat:@"%d",i];
+    int valorActual = [self.texto1.text intValue];
+    valorActual--;
+    self.texto1.text = [NSString stringWithFormat:@"%d", valorActual];
 }
 
+- (IBAction)botonIn:(UIButton *)sender {
+    int valorActual = [self.texto1.text intValue];
+    valorActual++;
+    self.texto1.text = [NSString stringWithFormat:@"%d",valorActual];
+}
 
+-(BOOL)_texto1:(UITextField *)texto1 shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string{
+    NSString *resultString =[texto1.text stringByReplacingCharactersInRange:range  withString:string];
+    
+    NSString *regexString = @"^[0-9]*$";
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"Solo hace match con %@", regexString];
+    return [predicate evaluateWithObject:resultString];
+}
 @end
